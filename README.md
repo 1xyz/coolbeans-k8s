@@ -1,17 +1,24 @@
 How to run Coolbeans in Kubernetes
 ==================================
 
-This example walks through the steps on how to run coolbeans in Kubernetes
+This example walks through the steps on how to run coolbeans in a Kubernetes setup.
 
 Assumptions
 -----------
 
-- You have a running kubernetes on a minikube cluster available to you.
-- `kubectl` current context is setup to point to the correct K8s cluster.
+- You have a running kubernetes or a minikube cluster available to you.
 
 
 Steps
 -----
+
+### Ensure that kubectl is pointing to the correct context
+
+    kubectl config get-contexts
+
+    CURRENT   NAME                                              CLUSTER                                           AUTHINFO                                          NAMESPACE
+    *         gke_xyz-dev-274318_us-central1-c_test-cluster-2   gke_xyz-dev-274318_us-central1-c_test-cluster-2   gke_xyz-dev-274318_us-central1-c_test-cluster-2
+              minikube                                          minikube                                          minikube
 
 ### Create a namespace
 
@@ -51,7 +58,7 @@ Verify the service `coolbeans` is created
     coolbeans   ClusterIP   None         <none>        11000/TCP,21000/TCP   99m
 
 
-### Create a stateful set
+### Create a stateful set (three node cluster)
 
     kubectl -n coolbeans  apply -f coolbeans-statefulset.yaml
 
@@ -80,7 +87,7 @@ Verify that the service endpoints are updated
     coolbeans   10.24.0.13:11000,10.24.1.13:11000,10.24.2.13:11000 + 3 more...   103m
 
 
-### Create a beanstalkd service that proxies connection to coolbeans stateful set app
+### Deploy beanstalkd proxy
 
     kubectl -n coolbeans  apply -f beanstalk-deployment.yaml
 

@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: coolbeans
+  namespace: coolbeans
+  labels:
+    app: coolbeans
+spec:
+  serviceName: coolbeans
+  podManagementPolicy: "Parallel"
+  replicas: 3
+  selector:
+    matchLabels:
+      app: coolbeans
+  template:
+    metadata:
+      labels:
+        app: coolbeans
+    spec:
+      terminationGracePeriodSeconds: 1800
+      containers:
+      - name: cluster-node
+        image: 1xyz/coolbeans:e2053de
+        imagePullPolicy: Always
+        env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: NODE_ID
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: COOLBEANS_RAFT_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: coolbeans-config
+                key: COOLBEANS_RAFT_PORT
+          - name: COOLBEANS_RPC_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: coolbeans-config
+                key: COOLBEANS_RPC_PORT
+          - name: PEERS_ADDRS
+            valueFrom:
+              configMapKeyRef:
+                name: coolbeans-config
+                key: PEERS_ADDRS
+          - name: BOOTSTRAP_NODE_ID
+            valueFrom:
+              configMapKeyRef:
+                name: coolbeans-config
+                key: BOOTSTRAP_NODE_ID
+          - name: DATA_DIR
+            valueFrom:
+              configMapKeyRef:
+                name: coolbeans-config
+                key: DATA_DIR
+          - name: ADDR_SUFFIX
+            valueFrom:
+              configMapKeyRef:
+                name: coolbeans-config
+                key: ADDR_SUFFIX
+        command:  ["/root/coolbeans", "cluster-node",  
+          "--node-id", "$(NODE_ID)",
+          "--root-dir", "$(DATA_DIR)",
+          "--bootstrap-node-id", "$(BOOTSTRAP_NODE_ID)",
+          "--raft-listen-addr", "$(POD_IP):$(COOLBEANS_RAFT_PORT)",
+          "--raft-advertized-addr", "$(NODE_ID).$(ADDR_SUFFIX):$(COOLBEANS_RAFT_PORT)",
+          "--node-listen-addr", ":$(COOLBEANS_RPC_PORT)",
+          "--node-peer-addrs", "$(PEERS_ADDRS)" ]
+        ports:
+        - containerPort: 11000
+          name: grpc-server
+        - containerPort: 21000
+          name: raft-tcp
+        resources:
+          limits:
+            cpu: "2000m"
+            memory: 2Gi
+          requests:
+            cpu: "500m"
+            memory: 1Gi

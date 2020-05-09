@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: beanstalkd
+  namespace: coolbeans
+spec:
+  selector:
+    matchLabels:
+      app: beanstalkd
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: beanstalkd
+    spec:
+      containers:
+      - name: beanstalkd-proxy
+        image: 1xyz/coolbeans:b760096
+        imagePullPolicy: Always
+        command: [ "/root/coolbeans", 
+          "beanstalkd", 
+          "--listen-port", "$(BEANSTALKD_PORT)",  
+          "--jsm-addrs", "$(PEERS_ADDRS)" ]
+        ports:
+          - containerPort: 11300
+            name: beanstalkd-tcp
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: BEANSTALKD_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: coolbeans-config
+              key: BEANSTALKD_PORT
+        - name: PEERS_ADDRS
+          valueFrom:
+            configMapKeyRef:
+              name: coolbeans-config
+              key: PEERS_ADDRS
+      restartPolicy: Always

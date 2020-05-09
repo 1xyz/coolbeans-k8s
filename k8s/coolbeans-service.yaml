@@ -1,0 +1,19 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: coolbeans
+  namespace: coolbeans
+  labels:
+    name: coolbeans
+spec:
+  clusterIP: None
+  ports:
+    - name: grpc-server
+      port: 11000
+      targetPort: 11000
+    - name: raft-tcp
+      port: 21000
+      targetPort: 21000
+  selector:
+    app: coolbeans

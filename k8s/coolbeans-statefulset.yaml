@@ -17,10 +17,10 @@ spec:
       labels:
         app: coolbeans
     spec:
-      terminationGracePeriodSeconds: 1800
+      terminationGracePeriodSeconds: 30
       containers:
       - name: cluster-node
-        image: 1xyz/coolbeans:e2053de
+        image: 1xyz/coolbeans:a41611c
         imagePullPolicy: Always
         env:
           - name: POD_IP

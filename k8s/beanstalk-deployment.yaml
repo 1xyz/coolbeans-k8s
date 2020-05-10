@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: beanstalkd-proxy
-        image: 1xyz/coolbeans:b760096
+        image: 1xyz/coolbeans:a41611c
         imagePullPolicy: Always
         command: [ "/root/coolbeans", 
           "beanstalkd", 

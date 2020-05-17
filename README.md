@@ -49,3 +49,7 @@ To shutdown
 Verify that all resources are removed
 
     $ kubectl get namespace coolbeans
+
+    Error from server (NotFound): namespaces "coolbeans" not found
+
+Ensure that the cloud provider has removed the storage that backs the persistent volume.

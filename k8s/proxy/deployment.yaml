@@ -1,3 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: beanstalkd
+  namespace: coolbeans
+  labels:
+    app: beanstalkd
+spec:
+  type: ClusterIP
+  ports:
+  - port: 11300
+    targetPort: 11300
+    protocol: TCP
+    name: beanstalk-tcp
+  selector:
+    app: beanstalkd
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

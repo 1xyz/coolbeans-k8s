@@ -1,114 +1,55 @@
 How to run Coolbeans in Kubernetes
 ==================================
 
-This example walks through the steps on how to run coolbeans in a Kubernetes setup.
+This repository provides a sample setup and examples to run coolbeans queuing service on kubernetes.
 
-Assumptions
+- [Quick setup](#quick-setup)
+- [Detailed step by step setup](doc/Guide.md)
+
+
+Quick setup
 -----------
 
-- You have a running kubernetes or a minikube cluster available to you.
+Run setup.sh 
+
+    $ ./setup.sh
+
+The above script applies k8s yaml files to create
+
+- A three pod stateful set that provides a replicated coolbeans queue.
+
+- A beanstalkd proxy service, with two replica pods, that proxies your request to the coolbeans queue.
+
+Verify that all pods are up & running
+
+    $ kubectl -n coolbeans get pods --watch
+
+    NAME                          READY   STATUS              RESTARTS   AGE
+    beanstalkd-7565987d88-f7qs6   1/1     Running             0          18s
+    beanstalkd-7565987d88-wlbpb   1/1     Running             0          18s
+    coolbeans-0                   1/1     Running             0          19s
+    coolbeans-1                   1/1     Running             0          19s
+    coolbeans-2                   1/1     Running             0          24s
 
 
-Steps
------
+If you prefer to see a detailed step by step review check out [guide]((doc/Guide.md)).
 
-### Ensure that kubectl is pointing to the correct context
+Next steps
+----------
 
-    kubectl config get-contexts
+- Deploy a simple demo app that uses the deployed coolbeans queuing service.
 
-    CURRENT   NAME                                              CLUSTER                                           AUTHINFO                                          NAMESPACE
-    *         gke_xyz-dev-274318_us-central1-c_test-cluster-2   gke_xyz-dev-274318_us-central1-c_test-cluster-2   gke_xyz-dev-274318_us-central1-c_test-cluster-2
-              minikube                                          minikube                                          minikube
+Shutdown this setup
+-------------------
 
-### Create a namespace
+To shutdown 
 
-    kubectl apply -f namespace.yaml
+    $ ./shutdown.sh
 
+Verify that all resources are removed
 
-Verify the namespace `coolbeans` is created
+    $ kubectl get namespace coolbeans
 
-    kubectl get namespaces 
+    Error from server (NotFound): namespaces "coolbeans" not found
 
-    NAME              STATUS   AGE
-    coolbeans         Active   97m
-
-
-
-### Apply the configuration map
-
-    kubectl apply -f coolbeans-configmap.yaml
-
-Verify the configmap `coolbeans-config` is created
-
-    kubectl -n coolbeans get configmaps
-    NAME               DATA   AGE
-    coolbeans-config   6      81m
-
-
-### Create the service 
-
-    kubectl apply -f coolbeans-service.yaml
-
-
-Verify the service `coolbeans` is created
-
-    kubectl -n coolbeans get service
-
-    NAME        TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)               AGE
-    coolbeans   ClusterIP   None         <none>        11000/TCP,21000/TCP   99m
-
-
-### Create a stateful set (three node cluster)
-
-    kubectl -n coolbeans  apply -f coolbeans-statefulset.yaml
-
-Verify the stateful set is created
-
-    kubectl -n coolbeans get statefulsets
-
-    NAME        READY   AGE
-    coolbeans   3/3     16m
-
-
-Verify that you have three pods up & running
-
-    kubectl -n coolbeans get pods
-
-    NAME                         READY   STATUS    RESTARTS   AGE
-    coolbeans-0                  1/1     Running   0          16m
-    coolbeans-1                  1/1     Running   0          16m
-    coolbeans-2                  1/1     Running   0          16m
-
-Verify that the service endpoints are updated
-
-    kubectl -n coolbeans get ep
-
-    NAME        ENDPOINTS                                                        AGE
-    coolbeans   10.24.0.13:11000,10.24.1.13:11000,10.24.2.13:11000 + 3 more...   103m
-
-
-### Deploy beanstalkd proxy
-
-    kubectl -n coolbeans  apply -f beanstalk-deployment.yaml
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Ensure that the cloud provider has removed the storage that backs the persistent volume.

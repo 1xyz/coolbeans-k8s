@@ -69,7 +69,7 @@ Verify the service `coolbeans` is created
 
 ### Create a stateful set
 
-    kubectl -n coolbeans  apply -f k8s/cluster-node/4-statefulset.yaml
+    kubectl apply -f k8s/cluster-node/3-statefulset.yaml
 
 Verify the stateful set is created
 

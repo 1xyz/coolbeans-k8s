@@ -9,6 +9,10 @@ spec:
   serviceName: coolbeans
   podManagementPolicy: "Parallel"
   replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 3
   selector:
     matchLabels:
       app: coolbeans
@@ -20,7 +24,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: cluster-node
-        image: 1xyz/coolbeans:a41611c
+        image: 1xyz/coolbeans:master-59560c3
         imagePullPolicy: Always
         env:
           - name: POD_IP
@@ -61,6 +65,21 @@ spec:
               configMapKeyRef:
                 name: coolbeans-config
                 key: ADDR_SUFFIX
+          - name: SNAPSHOT_THRESHOLD
+            valueFrom:
+              configMapKeyRef:
+                name: coolbeans-config
+                key: SNAPSHOT_THRESHOLD
+          - name: TRAILING_LOG_COUNT
+            valueFrom:
+              configMapKeyRef:
+                name: coolbeans-config
+                key: TRAILING_LOG_COUNT
+          - name: SNAPSHOT_INTERVAL_SECS
+            valueFrom:
+              configMapKeyRef:
+                name: coolbeans-config
+                key: SNAPSHOT_INTERVAL_SECS          
         command:  ["/root/coolbeans", "cluster-node",  
           "--node-id", "$(NODE_ID)",
           "--root-dir", "$(DATA_DIR)",
@@ -68,7 +87,10 @@ spec:
           "--raft-listen-addr", "$(POD_IP):$(COOLBEANS_RAFT_PORT)",
           "--raft-advertized-addr", "$(NODE_ID).$(ADDR_SUFFIX):$(COOLBEANS_RAFT_PORT)",
           "--node-listen-addr", ":$(COOLBEANS_RPC_PORT)",
-          "--node-peer-addrs", "$(PEERS_ADDRS)" ]
+          "--node-peer-addrs", "$(PEERS_ADDRS)",
+          "--snapshot-threshold", "$(SNAPSHOT_THRESHOLD)",
+          "--trailing-log-count", "$(TRAILING_LOG_COUNT)",
+          "--snapshot-interval-secs", "$(SNAPSHOT_INTERVAL_SECS)" ]
         ports:
         - containerPort: 11000
           name: grpc-server
@@ -81,3 +103,14 @@ spec:
           requests:
             cpu: "500m"
             memory: 1Gi
+        volumeMounts:
+        - name: data
+          mountPath: /root/data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi

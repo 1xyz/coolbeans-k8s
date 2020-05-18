@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: consume-batch-0
+  namespace: coolbeans
+  labels:
+    jobgroup: consumer
+spec:
+  template:
+    metadata:
+      name: consumer
+      namespace: coolbeans
+      labels:
+        jobgroup: consumer
+    spec:
+      containers:
+      - name: consumer
+        image: 1xyz/jellybeans-workload:master-ebe38f7
+        command: ["/root/jellybeans-workload", "consumer",
+          "--addr", "beanstalkd.coolbeans.svc.cluster.local:11300"]
+      restartPolicy: Never
+  backoffLimit: 1

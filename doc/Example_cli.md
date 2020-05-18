@@ -1,5 +1,5 @@
-Example: How to use a beanstalkd tools with a K8s service
-=========================================================
+Example: How to use a beanstalkd tools with the coolbeans K8s service
+=====================================================================
 
 This guide provides an example CLI on how to connect with coolbeans beanstalkd on kubernetes.
 

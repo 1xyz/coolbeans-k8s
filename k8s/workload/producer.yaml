@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: produce-batch-0
+  namespace: coolbeans
+  labels:
+    jobgroup: producer
+spec:
+  template:
+    metadata:
+      name: producer
+      namespace: coolbeans
+      labels:
+        jobgroup: producer
+    spec:
+      containers:
+      - name: producer
+        image: 1xyz/jellybeans-workload:master-ebe38f7
+        command: ["/root/jellybeans-workload", "producer",
+          "--addr", "beanstalkd.coolbeans.svc.cluster.local:11300",
+          "--count", "10000"]
+      restartPolicy: Never
+  backoffLimit: 1

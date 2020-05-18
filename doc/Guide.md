@@ -1,7 +1,7 @@
 How to run Coolbeans in Kubernetes - A step by step guide
 ==========================================================
 
-This repository provides an example setup to run coolbeans on kubernetes.
+This guide provides an example setup to run coolbeans on kubernetes.
 
 - [Objectives](#objectives)
 - [Requirements](#requirements)

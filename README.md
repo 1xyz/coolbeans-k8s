@@ -5,6 +5,7 @@ This repository provides a sample setup and examples to run coolbeans queuing se
 
 - [Quick setup](#quick-setup)
 - [Detailed step by step setup](doc/Guide.md)
+- [Example: Use beanstalkd tools with K8s service](doc/Example-cli.md)
 
 
 Quick setup
@@ -37,6 +38,7 @@ If you prefer to see a detailed step by step review check out [guide]((doc/Guide
 Next steps
 ----------
 
+- Use a CLI or a UI to talk to beanstalkd service.
 - Deploy a simple demo app that uses the deployed coolbeans queuing service.
 
 Shutdown this setup

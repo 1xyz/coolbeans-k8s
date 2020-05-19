@@ -24,7 +24,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: cluster-node
-        image: 1xyz/coolbeans:master-59560c3
+        image: 1xyz/coolbeans:master-ca7c9d6
         imagePullPolicy: Always
         env:
           - name: POD_IP
@@ -106,6 +106,11 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /root/data
+        readinessProbe:
+          exec:
+            command: ["/root/coolbeans", "--verbose", "cluster-client", "is_leader", "--node-addr", "localhost:11000"]
+          initialDelaySeconds: 30
+          periodSeconds: 15
   volumeClaimTemplates:
     - metadata:
         name: data

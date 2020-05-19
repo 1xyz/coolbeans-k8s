@@ -32,12 +32,13 @@ spec:
     spec:
       containers:
       - name: beanstalkd-proxy
-        image: 1xyz/coolbeans:fix-cb-15-jobsize-d3af70d
+        image: 1xyz/coolbeans:master-ca7c9d6
         imagePullPolicy: Always
         command: [ "/root/coolbeans", 
           "beanstalkd", 
           "--listen-port", "$(BEANSTALKD_PORT)",  
-          "--jsm-addrs", "$(PEERS_ADDRS)" ]
+          "--upstream-addrs", "$(PEERS_ADDRS)",
+          "--max-job-size", "$(MAX_JOB_SIZE_BYTES)" ]
         ports:
           - containerPort: 11300
             name: beanstalkd-tcp
@@ -56,4 +57,9 @@ spec:
             configMapKeyRef:
               name: coolbeans-config
               key: PEERS_ADDRS
+        - name:  MAX_JOB_SIZE_BYTES
+          valueFrom:
+            configMapKeyRef:
+              name: coolbeans-config
+              key: MAX_JOB_SIZE_BYTES
       restartPolicy: Always

@@ -24,7 +24,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: cluster-node
-        image: 1xyz/coolbeans:master-ca7c9d6
+        image: 1xyz/coolbeans:fix-cb-11-metrics-80687f2
         imagePullPolicy: Always
         env:
           - name: POD_IP
@@ -79,7 +79,12 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: coolbeans-config
-                key: SNAPSHOT_INTERVAL_SECS          
+                key: SNAPSHOT_INTERVAL_SECS
+          - name: PROMETHEUS_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: coolbeans-config
+                key: PROMETHEUS_PORT
         command:  ["/root/coolbeans", "cluster-node",  
           "--node-id", "$(NODE_ID)",
           "--root-dir", "$(DATA_DIR)",
@@ -90,7 +95,8 @@ spec:
           "--node-peer-addrs", "$(PEERS_ADDRS)",
           "--snapshot-threshold", "$(SNAPSHOT_THRESHOLD)",
           "--trailing-log-count", "$(TRAILING_LOG_COUNT)",
-          "--snapshot-interval-secs", "$(SNAPSHOT_INTERVAL_SECS)" ]
+          "--snapshot-interval-secs", "$(SNAPSHOT_INTERVAL_SECS)",
+          "--prometheus-addr", ":$(PROMETHEUS_PORT)" ]
         ports:
         - containerPort: 11000
           name: grpc-server
@@ -106,11 +112,13 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /root/data
-        readinessProbe:
-          exec:
-            command: ["/root/coolbeans", "--verbose", "cluster-client", "is_leader", "--node-addr", "localhost:11000"]
-          initialDelaySeconds: 30
-          periodSeconds: 15
+        ##
+        # Uncomment to use the readiness probe
+        # readinessProbe:
+        #   exec:
+        #     command: ["/root/coolbeans", "--verbose", "cluster-client", "is_leader", "--node-addr", "localhost:11000"]
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 15
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -118,4 +126,4 @@ spec:
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
-            storage: 1Gi
+            storage: 100Gi

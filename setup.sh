@@ -13,3 +13,10 @@ done
 
 echo "Apply proxy/deployment.yaml"
 kubectl apply -f k8s/proxy/deployment.yaml
+
+echo "Installing a Prometheus service to scrape metrics"
+for f in k8s/prometheus/*.yaml
+do
+  echo "kubectl apply -f $f"
+  kubectl apply -f $f
+done

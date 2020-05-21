@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: coolbeans
+data:
+  prometheus.yml: |-
+    # my global config
+    global:
+      scrape_interval:     30s # Default is every 1 minute.
+      evaluation_interval: 30s # The default is every 1 minute.
+      # scrape_timeout is set to the global default (10s).
+
+    # Alertmanager configuration
+    alerting:
+      alertmanagers:
+      - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+    # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+    rule_files:
+      # - "first_rules.yml"
+      # - "second_rules.yml"
+
+    # A scrape configuration containing exactly one endpoint to scrape:
+    # Here it's Prometheus itself.
+    scrape_configs:
+      - job_name: cluster-node
+        scrape_interval: 30s
+        static_configs:
+        - targets: 
+          - coolbeans-0.coolbeans.coolbeans.svc.cluster.local:2020
+          - coolbeans-1.coolbeans.coolbeans.svc.cluster.local:2020
+          - coolbeans-2.coolbeans.coolbeans.svc.cluster.local:2020

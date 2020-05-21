@@ -5,6 +5,10 @@ if ! [ -x "$(command -v kubectl)" ]; then
   exit 1
 fi
 
+echo "delete prometheus"
+kubectl -n coolbeans delete deployment prometheus
+kubectl -n coolbeans delete configmap prometheus-config
+
 echo "delete beanstalkd-proxy"
 kubectl -n coolbeans delete deployment beanstalkd
 kubectl -n coolbeans delete service beanstalkd

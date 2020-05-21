@@ -40,7 +40,7 @@ Next steps
 ----------
 
 - [Use a CLI or a UI to talk to beanstalkd service](doc/Example_cli.md).
-- Deploy a simple demo app that uses the deployed coolbeans queuing service.
+- [Deploy a simple demo app that uses the deployed coolbeans queuing service](doc/Example_batch_workload.md).
 
 Shutdown this setup
 -------------------

@@ -24,7 +24,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: cluster-node
-        image: 1xyz/coolbeans:fix-cb-11-metrics-80687f2
+        image: 1xyz/coolbeans:v0.1.10
         imagePullPolicy: Always
         env:
           - name: POD_IP
@@ -65,6 +65,11 @@ spec:
               configMapKeyRef:
                 name: coolbeans-config
                 key: ADDR_SUFFIX
+          - name: PROMETHEUS_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: coolbeans-config
+                key: PROMETHEUS_PORT
           - name: SNAPSHOT_THRESHOLD
             valueFrom:
               configMapKeyRef:
@@ -80,11 +85,6 @@ spec:
               configMapKeyRef:
                 name: coolbeans-config
                 key: SNAPSHOT_INTERVAL_SECS
-          - name: PROMETHEUS_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: coolbeans-config
-                key: PROMETHEUS_PORT
         command:  ["/root/coolbeans", "cluster-node",  
           "--node-id", "$(NODE_ID)",
           "--root-dir", "$(DATA_DIR)",
@@ -93,9 +93,16 @@ spec:
           "--raft-advertized-addr", "$(NODE_ID).$(ADDR_SUFFIX):$(COOLBEANS_RAFT_PORT)",
           "--node-listen-addr", ":$(COOLBEANS_RPC_PORT)",
           "--node-peer-addrs", "$(PEERS_ADDRS)",
-          "--snapshot-threshold", "$(SNAPSHOT_THRESHOLD)",
-          "--trailing-log-count", "$(TRAILING_LOG_COUNT)",
-          "--snapshot-interval-secs", "$(SNAPSHOT_INTERVAL_SECS)",
+          ## By default all logs are fsynced to disk (bolt-db)
+          ## By default fsync is called for every commit to the disk log
+          # "--no-fsync",
+          ## 
+          ## Here, all the logs are in memory & not in bolt-db, but snapshots as usual are on
+          ## disk. You can tune the snapshot threshold, trailing-log-count etc..
+          # "--no-disk-log"
+          # "--snapshot-threshold", "$(SNAPSHOT_THRESHOLD)",
+          # "--trailing-log-count", "$(TRAILING_LOG_COUNT)",
+          # "--snapshot-interval-secs", "$(SNAPSHOT_INTERVAL_SECS)",
           "--prometheus-addr", ":$(PROMETHEUS_PORT)" ]
         ports:
         - containerPort: 11000

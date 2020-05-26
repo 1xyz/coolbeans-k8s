@@ -45,7 +45,7 @@ Verify that all pods are up & running
     coolbeans-1                   1/1     Running             0          19s
     coolbeans-2                   1/1     Running             0          24s
 
-If you prefer to see a detailed step by step review check out [guide]((doc/Guide.md)).
+If you prefer to see a detailed step by step review check out [guide](doc/Guide.md).
 
 Next steps
 ----------

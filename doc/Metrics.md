@@ -6,7 +6,7 @@ This guide provides an example metrics setup.
 - [Objectives](#objectives)
 - [Setup port forwarding](#setup-port-forwarding)
 - [Setup Prometheus](#setup-prometheus)
-- [Run a grafana server](#run-a-beanstalkd-cli)
+- [Run a grafana server](#setup-grafana)
 
 Objectives
 ----------

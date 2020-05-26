@@ -1,13 +1,12 @@
 How to run Coolbeans in Kubernetes
 ==================================
 
-This repository provides a sample setup and examples to run coolbeans queuing service on kubernetes.
+This repository provides a sample setup and examples to run [coolbeans](https://github.com/1xyz/coolbeans) queue service on kubernetes.
 
 - [Quick setup](#quick-setup)
 - [Detailed step by step setup](doc/Guide.md)
 - [Example: Use beanstalkd tools with K8s service](doc/Example_cli.md)
 - [Example: Run a sample batch workload with K8s service](doc/Example_batch_workload.md)
-
 
 
 Quick setup

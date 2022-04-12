@@ -22,7 +22,9 @@ Prior to running this setup, ensure you have the following pre-requisites.
 
 Run setup.sh 
 
-    $ ./setup.sh
+```shell
+./setup.sh
+```
 
 The above script applies k8s yaml files to create
 
@@ -36,14 +38,18 @@ The above script applies k8s yaml files to create
 
 Verify that all pods are up & running
 
-    $ kubectl -n coolbeans get pods --watch
+```shell
+kubectl -n coolbeans get pods --watch
+```
 
+```
     NAME                          READY   STATUS              RESTARTS   AGE
     beanstalkd-7565987d88-f7qs6   1/1     Running             0          18s
     beanstalkd-7565987d88-wlbpb   1/1     Running             0          18s
     coolbeans-0                   1/1     Running             0          19s
     coolbeans-1                   1/1     Running             0          19s
     coolbeans-2                   1/1     Running             0          24s
+```
 
 If you prefer to see a detailed step by step review check out [guide](doc/Guide.md).
 
@@ -59,12 +65,18 @@ Shutdown this setup
 
 To shutdown 
 
-    $ ./shutdown.sh
+```shell
+./shutdown.sh
+```
 
 Verify that all resources are removed
 
-    $ kubectl get namespace coolbeans
+```shell
+kubectl get namespace coolbeans
+```
 
-    Error from server (NotFound): namespaces "coolbeans" not found
+```
+Error from server (NotFound): namespaces "coolbeans" not found
+```
 
 Ensure that the cloud provider has removed the storage that backs the persistent volume.
